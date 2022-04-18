@@ -1,0 +1,19 @@
+{
+  "entities": {
+    "pixel": {
+      "primary": "pos",
+
+      "pos": {
+        "type": "string"
+      },
+      "color": {
+        "type": "string",
+        "value": "ffffff"
+      },
+      "user": {
+        "type": "string",
+        "value": "No name"
+      }
+    }
+  }
+}
