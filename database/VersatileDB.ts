@@ -14,6 +14,7 @@ export class DB {
   create: (entity: string, values: object) => any[];
   set: (key: string, value: any) => void;
   jsonify: () => {};
+  jsonify_fast: () => {};
   get: (key: string) => any;
   read: () => any;
   format: () => void;
@@ -30,6 +31,8 @@ export class DB {
     this.path = path;
     this.queue = [];
     this.data = '';
+
+    console.log(options);
 
     if (options.schema)
       this.schema = JSON.parse(
@@ -154,6 +157,18 @@ export class DB {
       const deflated = gzipSync('\0');
 
       writeFileSync(this.path, deflated);
+    };
+
+    this.jsonify_fast = function () {
+      return `{"${this.data
+        .split('\0')
+        .join(`,"`)
+        .split(`":"`)
+        .join('"""":""""')
+        .split(':')
+        .join(`":`)
+        .split('"""":""""')
+        .join(`:"`)}b":"b"}`;
     };
 
     this.commit = function () {

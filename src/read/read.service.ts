@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { DB } from 'database/VersatileDB';
-import { join } from 'path';
-
-const data = new DB(
-  join(__dirname, '..', '..', 'database', 'pixels.db'),
-  {},
-).read();
+import data from 'src/utils/utils';
 
 @Injectable()
 export class ReadService {
   getBoard() {
-    return data.read_and_jsonify();
+    // console.log(data.jsonify_fast());
+    return data.jsonify_fast();
   }
 
   getPixel(x, y) {
-    return data.read_and_get(`${x}|${y}`);
+    return data.get(`${x}|${y}`);
   }
 
   getUser(x, y) {
