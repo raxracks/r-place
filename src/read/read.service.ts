@@ -4,7 +4,7 @@ import data from 'src/utils/utils';
 @Injectable()
 export class ReadService {
   getBoard() {
-    return data.jsonify_fast();
+    return data.jsonify();
   }
 
   getPixel(x, y) {
