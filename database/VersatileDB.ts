@@ -41,7 +41,7 @@ export class DB {
     this.autoinsert = options.autoinsert ? options.autoinsert : true;
 
     this.remove = function (key) {
-      let item = `${key}:${this.get(key)}\0`;
+      let item = `\0${key}:${this.get(key)}`;
 
       if (typeof this.get(key) === 'object')
         item = `\0${key}:${JSON.stringify(this.get(key))}`;
@@ -152,7 +152,7 @@ export class DB {
     };
 
     this.format = function () {
-      const deflated = gzipSync('\0');
+      const deflated = gzipSync('');
 
       writeFileSync(this.path, deflated);
     };
