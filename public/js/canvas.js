@@ -122,7 +122,7 @@ fetch('/read/board').then((res) => {
   res.json().then((data) => {
     Object.keys(data).forEach((pos) => {
       let [x, y] = pos.split('|');
-      ctx.fillStyle = `#${data[pos].color}`;
+      ctx.fillStyle = `#${JSON.parse(data[pos]).color}`;
       ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
     });
   });
