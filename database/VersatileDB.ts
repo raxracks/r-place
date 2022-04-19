@@ -32,8 +32,6 @@ export class DB {
     this.queue = [];
     this.data = '';
 
-    console.log(options);
-
     if (options.schema)
       this.schema = JSON.parse(
         readFileSync(options.schema, { flag: 'r', encoding: 'utf-8' }),
