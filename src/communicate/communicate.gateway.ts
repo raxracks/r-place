@@ -8,6 +8,8 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { ReadService } from 'src/read/read.service';
+import { WriteService } from 'src/write/write.service';
 
 @WebSocketGateway({
   cors: {
@@ -17,12 +19,28 @@ import { Socket, Server } from 'socket.io';
 export class CommunicateGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(
+    private readonly writeService: WriteService,
+    private readonly readService: ReadService,
+  ) {}
+
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('CommunicateGateway');
 
-  @SubscribeMessage('msgToServer')
-  handleMessage(client: Socket, payload: string): void {
-    this.server.emit('msgToClient', payload);
+  @SubscribeMessage('set pixel')
+  setPixel(client: Socket, payload): void {
+    this.writeService.setPixel(
+      payload.x,
+      payload.y,
+      payload.color,
+      payload.user,
+    );
+    this.server.emit('update pixel', payload);
+  }
+
+  @SubscribeMessage('get user')
+  getUser(client: Socket, payload): void {
+    client.emit('user info', this.readService.getUser(payload.x, payload.y));
   }
 
   afterInit(server: Server) {

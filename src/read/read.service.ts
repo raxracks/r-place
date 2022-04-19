@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { DB } from 'database/VersatileDB';
 import { join } from 'path';
 
-const data = new DB(join(__dirname, '..', '..', 'database', 'packages.db'), {
-  schema: join(__dirname, '..', '..', 'database', 'schema.json'),
-  autoinsert: false,
-}).read();
+const data = new DB(
+  join(__dirname, '..', '..', 'database', 'pixels.db'),
+  {},
+).read();
 
 @Injectable()
 export class ReadService {

@@ -24,8 +24,9 @@ export class DB {
   read_and_jsonify: () => {};
   remove_and_commit: (key: string) => void;
   queue_push_and_commit: () => void;
+  append_ignorant: (key: string, value: any) => void;
 
-  constructor(path, options) {
+  constructor(path, options: any = {}) {
     this.path = path;
     this.queue = [];
     this.data = '';
@@ -42,7 +43,7 @@ export class DB {
       let item = `${key}:${this.get(key)}\0`;
 
       if (typeof this.get(key) === 'object')
-        item = `${key}:${JSON.stringify(this.get(key))}\0`;
+        item = `\0${key}:${JSON.stringify(this.get(key))}`;
 
       this.data = this.data.replace(item, '');
     };
@@ -105,14 +106,21 @@ export class DB {
 
     this.set = function (key, value) {
       if (typeof value == 'object') value = JSON.stringify(value);
-      const item = `${key}:${value}\0`;
+      const item = `\0${key}:${value}`;
 
       if (!this.data.includes(`${key}:`)) {
         this.data += item;
       } else {
         const value = this.data.split(`${key}:`)[1].split('\0')[0];
-        this.data = this.data.split(`${key}:${value}`).join(item);
+        this.data = this.data.split(`\0${key}:${value}`).join(item);
       }
+    };
+
+    this.append_ignorant = function (key, value) {
+      if (typeof value == 'object') value = JSON.stringify(value);
+      const item = `${key}:${value}\0`;
+
+      this.data += item;
     };
 
     this.jsonify = function () {
@@ -154,8 +162,9 @@ export class DB {
 
     this.create_and_commit = function (entity, values) {
       this.autoinsert = true;
-      this.create(entity, values);
+      let ret = this.create(entity, values);
       this.commit();
+      return ret;
     };
 
     this.set_and_commit = function (key, value) {

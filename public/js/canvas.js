@@ -9,58 +9,121 @@ let panY = 0;
 let startPanX = screen.availWidth / 2;
 let startPanY = screen.availHeight / 2;
 let pixelSize = 2;
+let mouseX = 0;
+let mouseY = 0;
+let mouseXReal = 0;
+let mouseYReal = 0;
+let startMouseX = 0;
+let startMouseY = 0;
 
-let width = 300;
-let height = 300;
+let width = 500;
+let height = 500;
 
 canvas.width = width * pixelSize;
 canvas.height = height * pixelSize;
 
-canvas.style.left = screen.availWidth / 2 - canvas.width / 2 + 'px';
-canvas.style.top = screen.availHeight / 2 - canvas.height / 2 + 'px';
+canvas.style.left = panX = canvas.getBoundingClientRect().x;
+canvas.style.top = panY = canvas.getBoundingClientRect().y;
 
-ctx.fillStyle = '#ffffff';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+window.addEventListener('wheel', (event) => {
+  zoom += event.deltaY * -0.01;
 
-ctx.fillStyle = '#000000';
-ctx.fillRect(0, 0, pixelSize, pixelSize);
+  zoom = clamp(zoom, 0.5, 20);
 
-document.body.addEventListener('mousemove', (event) => {
+  $('#container')[0].style.transform = `scale(${zoom})`;
+  $('#coordinates').text(`(${mouseX}, ${mouseY}) ${zoom}x`);
+
+  // $('#username')[0].style.display = 'none';
+});
+
+canvas.addEventListener('mousedown', () => {
+  startMouseX = mouseXReal;
+  startMouseY = mouseYReal;
+});
+
+canvas.addEventListener('mouseup', () => {
+  if (
+    Math.abs(mouseXReal - startMouseX) < 10 &&
+    Math.abs(mouseYReal - startMouseY) < 10
+  ) {
+    ctx.fillStyle = $('#color')[0].value.slice(1);
+    ctx.fillRect(mouseX * pixelSize, mouseY * pixelSize, pixelSize, pixelSize);
+
+    socket.emit('set pixel', {
+      x: mouseX,
+      y: mouseY,
+      color: $('#color')[0].value.slice(1),
+      user: localStorage.getItem('name'),
+    });
+  }
+});
+
+// canvas.addEventListener(
+//   'contextmenu',
+//   function (ev) {
+//     ev.preventDefault();
+
+//     socket.emit('get user', {
+//       x: mouseX,
+//       y: mouseY,
+//     });
+
+//     return false;
+//   },
+//   false,
+// );
+
+canvas.addEventListener('mousemove', (event) => {
+  mouseXReal = event.clientX;
+  mouseYReal = event.clientY;
+
+  var boundingRect = event.target.getBoundingClientRect();
+  let xOffset = Math.round(event.clientX - boundingRect.left) / zoom - 1;
+  let yOffset = Math.round(event.clientY - boundingRect.top) / zoom - 1.25;
+
+  mouseX = clamp(Math.round(xOffset / pixelSize), 0, width);
+  mouseY = clamp(Math.round(yOffset / pixelSize), 0, height);
+
+  $('#coordinates').text(`(${mouseX}, ${mouseY}) ${zoom}x`);
+});
+
+window.addEventListener('mousemove', (event) => {
   if (mouseDown) {
     let offsetX = event.clientX - startPanX;
     let offsetY = event.clientY - startPanY;
 
-    panX += offsetX;
-    panY += offsetY;
+    panX += offsetX / zoom;
+    panY += offsetY / zoom;
 
-    panX = clamp(panX, -canvas.width, window.innerWidth);
-    panY = clamp(panY, -canvas.height, window.innerHeight);
+    panX = clamp(panX, -canvas.width + 50, window.innerWidth - 50);
+    panY = clamp(panY, -canvas.height + 50, window.innerHeight - 50);
 
     startPanX = event.clientX;
     startPanY = event.clientY;
 
     canvas.style.left = panX + 'px';
     canvas.style.top = panY + 'px';
+
+    // $('#username')[0].style.display = 'none';
   }
 });
 
-document.body.addEventListener('mouseup', () => {
+window.addEventListener('mouseup', () => {
   mouseDown = false;
 });
 
-document.body.addEventListener('mousedown', (event) => {
+window.addEventListener('mousedown', (event) => {
   startPanX = event.clientX;
   startPanY = event.clientY;
   mouseDown = true;
 });
 
-document.body.addEventListener('wheel', (event) => {
-  zoom += event.deltaY * -0.01;
-
-  zoom = clamp(zoom, 0.75, 20);
-
-  canvas.style.width = width * zoom;
-  canvas.style.height = height * zoom;
+fetch('/read/board').then((res) => {
+  res.json().then((data) => {
+    Object.keys(data).forEach((pos) => {
+      let [x, y] = pos.split('|');
+      ctx.fillStyle = `#${JSON.parse(data[pos]).color}`;
+      ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+    });
+  });
 });
-
-function resize() {}

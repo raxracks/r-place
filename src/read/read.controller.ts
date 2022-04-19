@@ -9,9 +9,4 @@ export class ReadController {
   getBoard() {
     return this.readService.getBoard();
   }
-
-  @Get('user')
-  getUser(@Query() query) {
-    return this.readService.getUser(query.x, query.y);
-  }
 }
