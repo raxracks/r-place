@@ -9,9 +9,4 @@ export const data = new DB(
   },
 ).read();
 
-export let json = data.read_and_jsonify();
-
-export function cache() {
-  json = data.read_and_jsonify();
-  console.log('Cached');
-}
+export default data;

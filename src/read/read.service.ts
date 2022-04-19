@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { data, json, cache } from 'src/utils/utils';
+import data from 'src/utils/utils';
 
 @Injectable()
 export class ReadService {
   getBoard() {
-    setTimeout(() => {
-      cache();
-    });
-
-    return json;
+    return data.jsonify_fast();
   }
 
   getPixel(x, y) {
