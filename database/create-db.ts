@@ -1,8 +1,8 @@
-import { DB } from 'database/VersatileDB';
+import { DB } from './VersatileDB';
 import { join } from 'path';
 
-const database = new DB(join(__dirname, '..', '..', 'database', 'pixels.db'), {
-  schema: join(__dirname, '..', '..', 'database', 'schema.json'),
+const database = new DB(join(__dirname, 'database', 'pixels.db'), {
+  schema: join(__dirname, 'database', 'schema.json'),
   autoinsert: true,
 });
 
