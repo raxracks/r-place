@@ -16,8 +16,8 @@ let mouseYReal = 0;
 let startMouseX = 0;
 let startMouseY = 0;
 
-let width = 1000;
-let height = 1000;
+let width = 400;
+let height = 400;
 
 canvas.width = width * pixelSize;
 canvas.height = height * pixelSize;
@@ -26,9 +26,9 @@ canvas.style.left = panX = canvas.getBoundingClientRect().x;
 canvas.style.top = panY = canvas.getBoundingClientRect().y;
 
 window.addEventListener('wheel', (event) => {
-  zoom += event.deltaY * -0.005;
+  zoom += event.deltaY * -0.01;
 
-  zoom = clamp(zoom, 0.125, 20);
+  zoom = clamp(zoom, 0.25, 20);
 
   $('#container')[0].style.transform = `scale(${zoom})`;
   $('#coordinates').text(`(${mouseX}, ${mouseY}) ${zoom}x`);

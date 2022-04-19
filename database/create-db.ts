@@ -11,8 +11,8 @@ database.read();
 
 database.append_ignorant('a', { a: 'a' });
 
-for (let y = 0; y < 1000; y++) {
-  for (let x = 0; x < 1000; x++) {
+for (let y = 0; y < 400; y++) {
+  for (let x = 0; x < 400; x++) {
     database.append_ignorant(`${x}|${y}`, {
       color: 'ffffff',
     });
