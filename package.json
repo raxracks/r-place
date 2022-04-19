@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "postbuild": "copyfiles views/* public/**/* database/*.db database/*.json dist/",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "ts-node-dev -r tsconfig-paths/register src/main.ts",
@@ -26,6 +27,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/platform-socket.io": "^8.4.4",
     "@nestjs/websockets": "^8.4.4",
+    "copyfiles": "^2.4.1",
     "fastify-static": "^4.6.1",
     "handlebars": "^4.7.7",
     "hbs": "^4.2.0",
