@@ -26,9 +26,9 @@ canvas.style.left = panX = canvas.getBoundingClientRect().x;
 canvas.style.top = panY = canvas.getBoundingClientRect().y;
 
 window.addEventListener('wheel', (event) => {
-  zoom += event.deltaY * -0.01;
+  zoom += event.deltaY * -0.005;
 
-  zoom = clamp(zoom, 0.5, 20);
+  zoom = clamp(zoom, 0.125, 20);
 
   $('#container')[0].style.transform = `scale(${zoom})`;
   $('#coordinates').text(`(${mouseX}, ${mouseY}) ${zoom}x`);
