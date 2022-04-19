@@ -16,8 +16,8 @@ let mouseYReal = 0;
 let startMouseX = 0;
 let startMouseY = 0;
 
-let width = 500;
-let height = 500;
+let width = 1000;
+let height = 1000;
 
 canvas.width = width * pixelSize;
 canvas.height = height * pixelSize;
