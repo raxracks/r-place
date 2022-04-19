@@ -7,7 +7,7 @@ export const data = new DB(
     schema: join(__dirname, '..', '..', 'database', 'schema.json'),
     autoinsert: true,
   },
-);
+).read();
 
 export let json = data.jsonify_fast();
 
