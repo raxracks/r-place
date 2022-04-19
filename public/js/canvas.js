@@ -118,6 +118,35 @@ window.addEventListener('mousedown', (event) => {
   mouseDown = true;
 });
 
+window.addEventListener('touchmove', (event) => {
+  if (mouseDown) {
+    let offsetX = event.touches[0].clientX - startPanX;
+    let offsetY = event.touches[0].clientY - startPanY;
+
+    panX += offsetX / zoom;
+    panY += offsetY / zoom;
+
+    panX = clamp(panX, -canvas.width, window.innerWidth);
+    panY = clamp(panY, -canvas.height, window.innerHeight);
+
+    startPanX = e.touches[0].clientX;
+    startPanY = e.touches[0].clientY;
+
+    canvas.style.left = panX + 'px';
+    canvas.style.top = panY + 'px';
+  }
+});
+
+window.addEventListener('touchend', () => {
+  mousedown = false;
+});
+
+window.addEventListener('touchstart', (event) => {
+  startPanX = event.touches[0].clientX;
+  startPanY = event.touches[0].clientY;
+  mousedown = true;
+});
+
 fetch('/read/board').then((res) => {
   res.json().then((data) => {
     Object.keys(data).forEach((pos) => {
